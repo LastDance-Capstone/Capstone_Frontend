@@ -8,7 +8,9 @@ export default async function Home() {
 
   return (
     <main className={styles.page}>
-      <Header />
+      <Header
+        isLoggedIn={isLoggedIn}
+      />
       <div className={styles.main}>
         <div className={styles.message}>
           <h1 className={styles.title}>

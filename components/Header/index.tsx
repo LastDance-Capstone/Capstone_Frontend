@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import Button from "@/components/Button";
+import KakaoLogin from "@/utils/oauth/kakao";
 import styles from "./header.module.css";
 
-export default function Header() {
+export default function Header({
+  isLoggedIn
+}: {
+  isLoggedIn: boolean;
+}) {
   return (
     <header className={styles.header}>
       <div className={styles.desktop}>
@@ -12,15 +19,25 @@ export default function Header() {
           </h1>
         </Link>
         <div className={styles.buttons}>
-          <Link href="/login">
+          {isLoggedIn ? (
             <Button
               variant="linear"
               size="small"
+              onClick={() => { window.location.href = '/oauth/logout'; }}
+              iconName="log-out"
+            >
+              로그아웃
+            </Button>
+          ) : (
+            <Button
+              variant="linear"
+              size="small"
+              onClick={() => KakaoLogin()}
               iconName="log-in"
             >
               로그인
             </Button>
-          </Link>
+          )}
         </div>
       </div>
       <div className={styles.mobile}>
@@ -28,14 +45,23 @@ export default function Header() {
           VoiceSecure
         </h1>
         <div className={styles.buttons}>
-          <Link href="/login">
+          {isLoggedIn ? (
             <Button
               variant="linear"
               size="tiny"
+              onClick={() => { window.location.href = '/oauth/logout'; }}
+              iconName="log-out"
+              iconOnly
+            />
+          ) : (
+            <Button
+              variant="linear"
+              size="tiny"
+              onClick={() => KakaoLogin()}
               iconName="log-in"
               iconOnly
             />
-          </Link>
+          )}
         </div>
       </div>
     </header>
