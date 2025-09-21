@@ -5,7 +5,6 @@ import TextFieldProps from "@/types/textfield";
 import styles from "./textfield.module.css";
 
 export default function TextField({
-  label,
   helperText,
   error = false,
   className,
@@ -24,10 +23,7 @@ export default function TextField({
 
   return (
     <div className={containerClassName}>
-      <label htmlFor={id} className={styles.label}>
-        {label}
-      </label>
-      <input {...rest} id={id} className={styles.input} />
+      <textarea {...rest} id={id} className={styles.input} />
       {helperText && <p className={styles.helperText}>{helperText}</p>}
     </div>
   );

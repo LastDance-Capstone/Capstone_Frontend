@@ -1,5 +1,4 @@
-export default interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+export default interface TextFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   helperText?: string;
   error?: boolean;
   className?: string;
