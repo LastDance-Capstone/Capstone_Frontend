@@ -1,0 +1,42 @@
+.header {
+  padding: 0 20px;
+  border-bottom: 1px solid var(--theme-border-default);
+}
+
+.desktop {
+  margin: 0 auto;
+  max-width: 1080px;
+  min-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile {
+  display: none;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 886px) {
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    min-height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
