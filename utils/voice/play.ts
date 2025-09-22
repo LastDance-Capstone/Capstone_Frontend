@@ -21,11 +21,11 @@ export default function Play(
   }
   
   audio.play().catch(error => {
-    console.error('오디오 재생 오류:', error);
+    console.error("오디오 재생 오류:", error);
     if (callbacks?.onError) {
       callbacks.onError();
     }
-    throw new Error('오디오 재생에 실패했습니다.');
+    throw new Error("오디오 재생에 실패했습니다.");
   });
   
   return audio;

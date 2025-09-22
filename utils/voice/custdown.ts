@@ -1,15 +1,15 @@
 export default function DownloadCustom(file: File, filename?: string): void {
   try {
     const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = filename || file.name || 'downloaded-file';
+    a.download = filename || file.name || "downloaded-file";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error('파일 다운로드 오류:', error);
-    throw new Error('파일 다운로드에 실패했습니다.');
+    console.error("파일 다운로드 오류:", error);
+    throw new Error("파일 다운로드에 실패했습니다.");
   }
 }

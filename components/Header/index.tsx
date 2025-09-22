@@ -25,7 +25,7 @@ export default function Header({
             <Button
               variant="linear"
               size="small"
-              onClick={() => { window.location.href = '/oauth/logout'; }}
+              onClick={() => { window.location.href = "/oauth/logout"; }}
               iconName="log-out"
             >
               로그아웃
@@ -53,7 +53,7 @@ export default function Header({
             <Button
               variant="linear"
               size="tiny"
-              onClick={() => { window.location.href = '/oauth/logout'; }}
+              onClick={() => { window.location.href = "/oauth/logout"; }}
               iconName="log-out"
               iconOnly
             />

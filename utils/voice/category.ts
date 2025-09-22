@@ -1,6 +1,6 @@
 "use server";
 
-import AdmZip from 'adm-zip';
+import AdmZip from "adm-zip";
 
 export default async function GetCategorySentence(
   category: string,
@@ -31,10 +31,10 @@ export default async function GetCategorySentence(
   // WAV 파일만 추출
   const audioFiles: File[] = [];
   zipEntries.forEach((entry) => {
-    if (!entry.isDirectory && entry.entryName.toLowerCase().endsWith('.wav')) {
+    if (!entry.isDirectory && entry.entryName.toLowerCase().endsWith(".wav")) {
       const fileData = entry.getData();
       const uint8Array = new Uint8Array(fileData);
-      const file = new File([uint8Array], entry.entryName, { type: 'audio/wav' });
+      const file = new File([uint8Array], entry.entryName, { type: "audio/wav" });
       audioFiles.push(file);
     }
   });
