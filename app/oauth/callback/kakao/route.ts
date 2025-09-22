@@ -36,7 +36,6 @@ export async function GET(
     await SaveJWT(backendToken);
     return NextResponse.redirect(new URL("/", req.url));
   } catch (error) {
-    new Error(`Kakao OAuth callback error: ${error}`);
     // 모든 과정에서 발생한 에러 처리
     return HandleError(error, req.url);
   }
