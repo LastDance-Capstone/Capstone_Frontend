@@ -7,8 +7,9 @@ export default function Modal({
   isOpen,
   onClose,
   title,
-  children,
+  className,
   actions,
+  children
 }: ModalProps) {
   if (!isOpen) {
     return null;
@@ -24,8 +25,12 @@ export default function Modal({
     <div className={styles.overlay} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         <div className={styles.content}>
-            <h2 className={styles.title}>{title}</h2>
-            <div className={styles.body}>{children}</div>
+          <h2 className={styles.title}>
+            {title}
+          </h2>
+          <div className={`${styles.body} ${className}`}>
+            {children}
+          </div>
         </div>
         {actions && <div className={styles.actions}>{actions}</div>}
       </div>
