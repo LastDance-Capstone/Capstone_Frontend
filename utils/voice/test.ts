@@ -16,7 +16,6 @@ export default async function GetTestSentence(
     body: formData
   });
   const blob = await res.blob();
-  console.log(blob);
   if (!res.ok) throw new Error("internal_server_error");
 
   const file = new File([blob], "response.wav", { type: blob.type });

@@ -2,7 +2,6 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Logo from "@/components/Logo";
 import TextField from "@/components/TextField";
 import Button from "@/components/Button";
