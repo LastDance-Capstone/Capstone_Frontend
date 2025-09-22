@@ -1,15 +1,15 @@
 "use client";
 
 import { useId } from "react";
-import TextFieldProps from "@/types/textfield";
-import styles from "./textfield.module.css";
+import TextAreaProps from "@/types/textarea";
+import styles from "./textarea.module.css";
 
-export default function TextField({
+export default function TextArea({
   helperText,
   error = false,
   className,
   ...rest
-}: TextFieldProps) {
+}: TextAreaProps) {
   const autoId = useId();
   const id = rest.id || autoId;
 
