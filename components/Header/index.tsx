@@ -22,23 +22,25 @@ export default function Header({
         </Link>
         <div className={styles.buttons}>
           {isLoggedIn ? (
-            <Button
-              variant="linear"
-              size="small"
-              onClick={() => { window.location.href = "/oauth/logout"; }}
-              iconName="log-out"
-            >
-              로그아웃
-            </Button>
+            <Link href="/oauth/logout">
+              <Button
+                variant="linear"
+                size="small"
+                iconName="log-out"
+              >
+                로그아웃
+              </Button>
+            </Link>
           ) : (
-            <Button
-              variant="linear"
-              size="small"
-              onClick={() => KakaoLogin()}
-              iconName="log-in"
-            >
-              로그인
-            </Button>
+            <Link href="/login">
+              <Button
+                variant="linear"
+                size="small"
+                iconName="log-in"
+              >
+                로그인
+              </Button>
+            </Link>
           )}
         </div>
       </div>
@@ -50,21 +52,25 @@ export default function Header({
         </Link>
         <div className={styles.buttons}>
           {isLoggedIn ? (
-            <Button
-              variant="linear"
-              size="tiny"
-              onClick={() => { window.location.href = "/oauth/logout"; }}
-              iconName="log-out"
-              iconOnly
-            />
+            <Link href="/oauth/logout">
+              <Button
+                variant="linear"
+                size="tiny"
+                onClick={() => { window.location.href = "/oauth/logout"; }}
+                iconName="log-out"
+                iconOnly
+              />
+            </Link>
           ) : (
-            <Button
-              variant="linear"
-              size="tiny"
-              onClick={() => KakaoLogin()}
-              iconName="log-in"
-              iconOnly
-            />
+            <Link href="/login">
+              <Button
+                variant="linear"
+                size="tiny"
+                onClick={() => KakaoLogin()}
+                iconName="log-in"
+                iconOnly
+              />
+            </Link>
           )}
         </div>
       </div>
