@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import ModalProps from "@/types/modal";
 import styles from "./modal.module.css";
 
@@ -61,7 +62,7 @@ export default function Modal({
     }
   };
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         <div className={styles.content}>
@@ -76,4 +77,7 @@ export default function Modal({
       </div>
     </div>
   );
+
+  // Portal을 사용하여 document.body에 직접 렌더링
+  return typeof window !== 'undefined' ? createPortal(modalContent, document.body) : null;
 }

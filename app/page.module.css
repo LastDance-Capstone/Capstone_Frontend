@@ -1,7 +1,6 @@
 .page {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
 }
 
 /* 유동적인 블루 웨이브 패턴 배경 */
