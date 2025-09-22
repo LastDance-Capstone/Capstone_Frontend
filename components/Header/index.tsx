@@ -17,7 +17,7 @@ export default function Header({
         <Link href="/" className={styles.logo}>
           <Logo
             type="text"
-            size={187}
+            size={196}
           />
         </Link>
         <div className={styles.buttons}>
@@ -56,7 +56,6 @@ export default function Header({
               <Button
                 variant="linear"
                 size="tiny"
-                onClick={() => { window.location.href = "/oauth/logout"; }}
                 iconName="log-out"
                 iconOnly
               />
@@ -66,7 +65,6 @@ export default function Header({
               <Button
                 variant="linear"
                 size="tiny"
-                onClick={() => KakaoLogin()}
                 iconName="log-in"
                 iconOnly
               />

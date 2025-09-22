@@ -369,4 +369,8 @@
     padding: 24px 20px;
     margin: 0 -4px;
   }
+
+  .buttons {
+    flex-direction: column;
+  }
 }
