@@ -7,8 +7,10 @@ import { useVoiceGeneration } from "@/hooks/useVoiceGeneration";
 import { useCategoryStates, categories } from "@/hooks/useCategoryStates";
 import DownloadCustom from "@/utils/voice/custdown";
 import DownloadCate from "@/utils/voice/catedown";
+import GetTestSentence from "@/utils/voice/test";
 import Button from "@/components/Button";
-import TextField from "@/components/TextField";
+import TextArea from "@/components/TextArea";
+import Modal from "@/components/Modal";
 import CategoryVoice from "@/types/voice";
 import styles from "./voicegenerator.module.css";
 
@@ -44,6 +46,20 @@ const categorySentences: Record<string, string[]> = {
   ]
 };
 
+// 녹음 대본
+const recordingScript = [
+  "안녕하세요, 무엇을 도와드릴까요?",
+  "지금 집에 없어서 나중에 다시 와주시면 감사하겠습니다.",
+  "네, 여기 맞습니다. 잠시만 기다려주세요. 지금 나가겠습니다.",
+  "죄송하지만 필요 없습니다. 다음에 기회가 되면 연락드릴게요.",
+  "5층 503호는 엘리베이터 타고 올라가서 오른쪽입니다.",
+  "물건 잘 받았어요. 수고 많으셨습니다. 조심해서 가세요.",
+  "혹시 누구신지 여쭤봐도 될까요? 약속이 있으셨나요?",
+  "현관 비밀번호함에 넣어주시면 제가 확인하겠습니다.",
+  "지금은 통화가 어렵습니다. 문자 남겨주시면 확인할게요.",
+  "아, 그 건은 이미 처리했습니다. 감사합니다."
+];
+
 export default function VoiceGenerator() {
   // 기본 상태
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -51,7 +67,14 @@ export default function VoiceGenerator() {
   const [isTextModified, setIsTextModified] = useState(false);
   const [originalText, setOriginalText] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 테스트 음성 상태
+  const [testAudio, setTestAudio] = useState<File | null>(null);
+  const [testAudioUrl, setTestAudioUrl] = useState<string>("");
+  const [isTestGenerating, setIsTestGenerating] = useState(false);
+  const [isTestPlaying, setIsTestPlaying] = useState(false);
 
   // 커스텀 훅들
   const { playAudioFile } = useAudioPlayer();
@@ -65,11 +88,22 @@ export default function VoiceGenerator() {
       setUploadedFile(file);
       resetGeneration();
       setIsTextModified(false);
+      setIsModalOpen(false);
     }
   };
 
-  // 업로드 버튼 클릭 핸들러
+  // 업로드 버튼 클릭 핸들러 (모달 열기)
   const HandleUploadClick = () => {
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 핸들러
+  const HandleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 모달에서 파일 업로드 버튼 클릭
+  const HandleModalFileUpload = () => {
     fileInputRef.current?.click();
   };
 
@@ -182,9 +216,52 @@ export default function VoiceGenerator() {
     }
   };
 
+  // 테스트 음성 생성 핸들러
+  const HandleTestGenerate = async () => {
+    if (!uploadedFile) return;
+
+    try {
+      setIsTestGenerating(true);
+      const testFile = await GetTestSentence(uploadedFile);
+      setTestAudio(testFile);
+      
+      // URL 생성 및 설정
+      const url = URL.createObjectURL(testFile);
+      setTestAudioUrl(url);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "테스트 음성 생성에 실패했습니다.");
+    } finally {
+      setIsTestGenerating(false);
+    }
+  };
+
+  // 테스트 음성 재생 핸들러
+  const HandleTestPlay = () => {
+    if (!testAudioUrl) return;
+
+    try {
+      // 모든 음성 정지
+      stopAllVoices();
+      setIsPlaying(false);
+
+      // 테스트 음성 재생
+      playAudioFile(testAudioUrl, {
+        onLoadStart: () => setIsTestPlaying(true),
+        onEnded: () => setIsTestPlaying(false),
+        onError: () => {
+          setIsTestPlaying(false);
+          alert("테스트 음성 재생에 실패했습니다.");
+        }
+      });
+    } catch (error) {
+      console.error("테스트 음성 재생 오류:", error);
+      setIsTestPlaying(false);
+    }
+  };
+
   return (
     <div className={styles.content}>
-      <TextField
+      <TextArea
         placeholder="발화문을 입력하시면, 업로드된 음성으로 발화문을 읽어주는 음성을 저장하거나 재생 할 수 있습니다."
         helperText="서비스 이용을 위해 반드시 음성 파일을 업로드해 주세요."
         className={styles.input}
@@ -194,13 +271,6 @@ export default function VoiceGenerator() {
       />
       <div className={styles.buttons}>
         <div className={styles.upload}>
-          <input
-            type="file"
-            accept="audio/*"
-            onChange={HandleFileUpload}
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
           <Button
             size="small"
             variant="linear"
@@ -249,10 +319,41 @@ export default function VoiceGenerator() {
           )}
         </div>
       </div>
-      {/* 음성이 업로드 되었을 때 카테고리 표시 */}
+      {/* 음성이 업로드 되었을 때 테스트 섹션과 카테고리 표시 */}
       {uploadedFile && (
-        <div className={styles.categories}>
-          {categories.map((category: string) => {
+        <>
+          {!testAudio && !isTestGenerating && (
+            <Button
+              size="small"
+              iconName="check"
+              onClick={HandleTestGenerate}
+            >
+              테스트 문장
+            </Button>
+          )}
+          {isTestGenerating && (
+            <Button
+              size="small"
+              disabled={true}
+            >
+              생성 중...
+            </Button>
+          )}
+          
+          {testAudio && !isTestGenerating && (
+            <Button
+              size="small"
+              iconName="play"
+              disabled={isTestPlaying}
+              onClick={HandleTestPlay}
+            >
+              {isTestPlaying ? "재생 중..." : "테스트 재생"}
+            </Button>
+          )}
+
+          {/* 카테고리 grid */}
+          <div className={styles.categories}>
+            {categories.map((category: string) => {
             const state = categoryStates[category];
             return (
               <div key={category} className={styles.cateItem}>
@@ -318,7 +419,60 @@ export default function VoiceGenerator() {
             );
           })}
         </div>
+        </>
       )}
+
+      {/* 음성 업로드 가이드 모달 */}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={HandleCloseModal}
+        title="🎙️ 음성 녹음 가이드"
+        className={styles.notice}
+        actions={
+          <Button
+            size="small"
+            iconName="check"
+            onClick={HandleModalFileUpload}
+          >
+            확인
+          </Button>
+        }
+      >
+        <h3 className={styles.headline}>
+          이렇게 하면 더 좋아요!
+        </h3>
+        <ul className={styles.script}>
+          <li className={styles.sentence}>
+            발음을 명확히 하여 조용한 환경에서 30~40초 사이 녹음
+          </li>
+          <li className={styles.sentence}>
+            녹음 시 억양을 반영하기 때문에 선호하는 억양으로 녹음 권장
+          </li>
+          <li className={styles.sentence}>
+            마이크와 적절한 거리 유지 (15-20cm)
+          </li>
+          <li className={styles.sentence}>
+            각 문장 사이 1초 정도 간격 두기
+          </li>
+        </ul>
+        <h3 className={styles.headline}>
+          🎙️ 녹음 대본
+        </h3>
+        <div className={styles.script}>
+          {recordingScript.map((sentence, index) => (
+            <p key={index} className={styles.sentence}>
+              {sentence}
+            </p>
+          ))}
+        </div>
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={HandleFileUpload}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
+      </Modal>
     </div>
   );
 }
