@@ -13,6 +13,7 @@
 }
 
 .modal {
+  max-height: 90vh;
   background-color: var(--theme-background-default);
   border-radius: 16px;
   max-width: 640px;
@@ -22,6 +23,8 @@
 }
 
 .content {
+  max-height: calc(90vh - 120px);
+  overflow-y: auto;
   display: flex;
   padding: 50px 20px 30px 20px;
   flex-direction: column;
