@@ -1,39 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import Button from "@/components/Button";
-import GetCookie from "@/utils/cookie/get";
 import styles from "./header.module.css";
 
 export default function Header({
-  isLoggedIn: initialIsLoggedIn
+  isLoggedIn
 }: {
   isLoggedIn: boolean;
 }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn);
-
-  // 클라이언트 사이드에서 토큰 상태 재확인
-  useEffect(() => {
-    // 쿠키에서 토큰 값을 가져오는 함수
-    const checkTokens = async () => {
-      const accessToken = await GetCookie("access_token");
-      const refreshToken = await GetCookie("refresh_token");
-      
-      // 토큰 상태에 따라 명시적으로 로그인 상태 설정
-      const shouldBeLoggedIn = !!(accessToken && refreshToken);
-      setIsLoggedIn(shouldBeLoggedIn);
-    };
-
-    checkTokens();
-    
-    // 쿠키 변경 감지를 위한 interval
-    const interval = setInterval(checkTokens, 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <header className={styles.header}>
       <div className={styles.desktop}>
