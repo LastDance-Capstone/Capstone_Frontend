@@ -36,7 +36,7 @@ export async function GET(
     await SaveJWT(backendToken);
     return NextResponse.redirect(new URL("/", req.url));
   } catch (error) {
-    console.error("Kakao OAuth callback error:", error);
+    new Error(`Kakao OAuth callback error: ${error}`);
     // 모든 과정에서 발생한 에러 처리
     return HandleError(error, req.url);
   }
@@ -48,7 +48,6 @@ async function GetKakaoToken(code: string): Promise<KakaoTokenResponse> {
   const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
 
   if (!clientId || !clientSecret || !redirectUri) {
-    console.error("카카오 인증 환경변수가 설정되지 않았습니다.");
     throw new Error("server_misconfigured");
   }
 
@@ -69,11 +68,6 @@ async function GetKakaoToken(code: string): Promise<KakaoTokenResponse> {
   });
 
   if (!response.ok) {
-    console.error("카카오 토큰 교환 실패", {
-      status: response.status,
-      statusText: response.statusText,
-      body: await response.text(),
-    });
     throw new Error("token_exchange_failed");
   }
 

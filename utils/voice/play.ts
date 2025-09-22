@@ -21,7 +21,6 @@ export default function Play(
   }
   
   audio.play().catch(error => {
-    console.error("오디오 재생 오류:", error);
     if (callbacks?.onError) {
       callbacks.onError();
     }

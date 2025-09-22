@@ -11,12 +11,7 @@ export async function GET(
   
   // 백엔드에 로그아웃 요청 (토큰이 있을 때만)
   if (token) {
-    try {
-      await DoLogOut(token);
-    } catch (error) {
-      console.error("failed_to_log_out");
-      // 백엔드 요청이 실패해도 계속 진행
-    }
+    await DoLogOut(token);
   }
   
   // 모든 쿠키 삭제

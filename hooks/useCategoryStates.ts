@@ -40,7 +40,6 @@ export const useCategoryStates = () => {
         }
       }));
     } catch (error) {
-      console.error(`${category} 음성 생성 중 오류:`, error);
       setCategoryStates(prev => ({
         ...prev,
         [category]: { ...prev[category], isGenerating: false }

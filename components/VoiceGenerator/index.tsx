@@ -153,7 +153,6 @@ export default function VoiceGenerator() {
         }
       });
     } catch (error) {
-      console.error("오디오 재생 오류:", error);
       setIsPlaying(false);
     }
   };
@@ -185,22 +184,18 @@ export default function VoiceGenerator() {
     const voice = categoryStates[category].voices[voiceIndex];
     if (!voice) return;
 
-    try {
-      // 모든 음성 정지
-      stopAllVoices();
+    // 모든 음성 정지
+    stopAllVoices();
 
-      // 현재 음성 재생
-      playAudioFile(voice.url, {
-        onLoadStart: () => setVoicePlayingState(category, voiceIndex, true),
-        onEnded: () => setVoicePlayingState(category, voiceIndex, false),
-        onError: () => {
-          setVoicePlayingState(category, voiceIndex, false);
-          alert("오디오 재생에 실패했습니다.");
-        }
-      });
-    } catch (error) {
-      console.error("오디오 재생 오류:", error);
-    }
+    // 현재 음성 재생
+    playAudioFile(voice.url, {
+      onLoadStart: () => setVoicePlayingState(category, voiceIndex, true),
+      onEnded: () => setVoicePlayingState(category, voiceIndex, false),
+      onError: () => {
+        setVoicePlayingState(category, voiceIndex, false);
+        alert("오디오 재생에 실패했습니다.");
+      }
+    });
   };
 
   // 카테고리별 음성 저장 핸들러
@@ -254,7 +249,6 @@ export default function VoiceGenerator() {
         }
       });
     } catch (error) {
-      console.error("테스트 음성 재생 오류:", error);
       setIsTestPlaying(false);
     }
   };

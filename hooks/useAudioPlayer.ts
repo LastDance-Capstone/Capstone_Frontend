@@ -29,7 +29,6 @@ export const useAudioPlayer = () => {
       const audio = Play(url, callbacks);
       audioRef.current = audio;
     } catch (error) {
-      console.error("오디오 재생 오류:", error);
       if (callbacks?.onError) {
         callbacks.onError();
       }

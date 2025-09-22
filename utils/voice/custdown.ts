@@ -9,7 +9,6 @@ export default function DownloadCustom(file: File, filename?: string): void {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error("파일 다운로드 오류:", error);
     throw new Error("파일 다운로드에 실패했습니다.");
   }
 }

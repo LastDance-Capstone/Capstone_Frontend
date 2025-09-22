@@ -47,6 +47,6 @@ export default async function KakaoLogin(
       nonce: nextUrl
     });
   } catch (error) {
-    console.error("Kakao login failed:", error);
+    throw new Error(`Kakao login error: ${error}`);
   }
 }
