@@ -1,0 +1,54 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 17, 17, 0.3);
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--theme-background-default);
+  border-radius: 16px;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  padding: 50px 20px 30px 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 10px;
+}
+
+.title {
+  font-size: var(--text-title-2-size);
+  font-weight: var(--text-title-2-weight);
+  line-height: var(--text-title-2-line-height);
+  color: var(--theme-text-primary);
+}
+
+.body {
+  font-size: var(--text-paragraph-1-size);
+  font-weight: var(--text-paragraph-1-weight);
+  line-height: var(--text-paragraph-1-line-height);
+  color: var(--theme-text-primary);
+}
+
+.actions {
+  background-color: var(--color-gray-200);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--theme-border-default);
+  padding: 10px 16px;
+  border-radius: 0 0 16px 16px;
+}
