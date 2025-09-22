@@ -39,6 +39,7 @@
 }
 
 .body {
+  width: 100%;
   font-size: var(--text-paragraph-1-size);
   font-weight: var(--text-paragraph-1-weight);
   line-height: var(--text-paragraph-1-line-height);
