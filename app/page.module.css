@@ -21,33 +21,6 @@
   position: relative;
 }
 
-.message::after {
-  content: "";
-  position: absolute;
-  top: 66.67%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% + 560px);
-  height: 200px;
-  background: radial-gradient(
-    ellipse 120% 150% at center,
-    rgba(178, 182, 211, 0.6) 0%,
-    rgba(194, 192, 218, 0.5) 20%,
-    rgba(208, 206, 222, 0.4) 35%,
-    rgba(220, 217, 232, 0.3) 50%,
-    rgba(231, 229, 241, 0.2) 65%,
-    rgba(231, 229, 241, 0.1) 80%,
-    rgba(231, 229, 241, 0.05) 90%,
-    rgba(231, 229, 241, 0.02) 95%,
-    transparent 100%
-  );
-  filter: blur(40px);
-  opacity: 0.7;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: 50%;
-}
-
 .title {
   font-size: var(--text-title-1-size);
   font-weight: var(--text-title-1-weight);
