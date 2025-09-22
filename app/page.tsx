@@ -4,7 +4,12 @@ import VoiceGenerator from "@/components/VoiceGenerator";
 import styles from "./page.module.css";
 
 export default async function Home() {
-  const isLoggedIn = await GetCookie("access_token") ? true : false;
+  // access_token과 refresh_token 모두 확인
+  const accessToken = await GetCookie("access_token");
+  const refreshToken = await GetCookie("refresh_token");
+  
+  // 둘 다 있어야 로그인 상태로 판단 (더 안전한 방식)
+  const isLoggedIn = !!(accessToken && refreshToken);
 
   return (
     <main className={styles.page}>
