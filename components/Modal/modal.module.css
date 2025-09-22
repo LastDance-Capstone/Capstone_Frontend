@@ -59,7 +59,7 @@
   border-radius: 0 0 16px 16px;
 }
 
-@media (max-width: 810px) {
+@media (max-width: 840px) {
   .overlay {
     align-items: flex-end;
   }

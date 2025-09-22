@@ -1,6 +1,7 @@
 .header {
   padding: 0 20px;
   border-bottom: 1px solid var(--theme-border-default);
+  background-color: var(--theme-background-default);
 }
 
 .desktop {
@@ -22,7 +23,7 @@
   gap: 16px;
 }
 
-@media (max-width: 810px) {
+@media (max-width: 840px) {
   .desktop {
     display: none;
   }
