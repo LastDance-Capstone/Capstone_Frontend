@@ -18,7 +18,7 @@ export default async function Home() {
           </h1>
           <div className={styles.description}>
             <p>
-              '누구세요?'라고 직접 묻기 불안했던 배달원, 예상치 못한 방문 앞에서도 더는 마음 졸이지 마세요.
+              &apos;누구세요?&apos;라고 직접 묻기 불안했던 배달원, 예상치 못한 방문 앞에서도 더는 마음 졸이지 마세요.
             </p>
             <p className={styles.description}>
               가장 익숙하고 믿음직한 목소리가 현관문 너머의 나를 안전하게 지켜주는 든든한 보안관이 되어줍니다.
