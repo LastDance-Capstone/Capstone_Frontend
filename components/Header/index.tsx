@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import Button from "@/components/Button";
-import KakaoLogin from "@/utils/oauth/kakao";
 import styles from "./header.module.css";
 
 export default function Header({
