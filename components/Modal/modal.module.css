@@ -18,6 +18,7 @@
   max-width: 640px;
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s ease-out;
 }
 
 .content {
@@ -27,6 +28,7 @@
   align-items: flex-start;
   align-self: stretch;
   gap: 10px;
+  overflow-y: auto;
 }
 
 .title {
@@ -51,4 +53,44 @@
   border-top: 1px solid var(--theme-border-default);
   padding: 10px 16px;
   border-radius: 0 0 16px 16px;
+}
+
+@media (max-width: 810px) {
+  .overlay {
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: none;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0;
+    transform: translateY(0);
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .content {
+    padding: 20px 20px 20px 20px;
+    max-height: calc(90vh - 120px); /* actions 높이 고려 */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .actions {
+    border-radius: 0;
+    padding: 16px 20px;
+    background-color: var(--color-gray-200);
+    border-top: 1px solid var(--theme-border-default);
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
