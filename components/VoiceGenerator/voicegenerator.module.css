@@ -377,6 +377,7 @@
   }
 
   .upload {
+    justify-content: center;
     gap: 12px;
     min-width: 0;
   }
