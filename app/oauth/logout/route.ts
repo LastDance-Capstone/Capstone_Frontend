@@ -3,7 +3,9 @@ import DoLogOut from "@/utils/oauth/logout";
 
 export async function GET(
   req: NextRequest
-): Promise<NextResponse> {
+): Promise<
+  NextResponse
+> {
   // 토큰 확인
   const token = req.cookies.get("refresh_token")?.value;
   
