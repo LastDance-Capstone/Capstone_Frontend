@@ -1,44 +1,69 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import TextField from "@/components/TextField";
+import Image from "next/image";
+import { useState, useRef } from "react";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useVoiceGeneration } from "@/hooks/useVoiceGeneration";
+import { useCategoryStates, categories } from "@/hooks/useCategoryStates";
+import DownloadCustom from "@/utils/voice/custdown";
+import DownloadCate from "@/utils/voice/catedown";
 import Button from "@/components/Button";
-import GetCustomSentence from "@/utils/voice/custom";
+import TextField from "@/components/TextField";
+import CategoryVoice from "@/types/voice";
 import styles from "./voicegenerator.module.css";
 
+// 카테고리 이름과 이미지 파일명 매핑
+const categoryImages: Record<string, string> = {
+  "배달": "delivery",
+  "스토킹": "stalking", 
+  "모르는사람": "stranger"
+};
+
+// 카테고리별 문장 매핑
+const categorySentences: Record<string, string[]> = {
+  "배달": [
+    "문 앞에 두고 가주세요. 감사합니다.",
+    "경비실에 맡겨주세요. 감사합니다.",
+    "고생 많으십니다. 감사합니다.",
+    "잘못 오신 것 같아요.",
+    "계속 문 앞에 계시면 경찰 부르겠습니다."
+  ],
+  "스토킹": [
+    "여기 CCTV 있어서 다 기록 되고 있어요.",
+    "경찰 부르겠습니다. 돌아가세요.",
+    "더 이상 찾아오지 마세요.",
+    "더 이상 할 이야기 없으니 그냥 가세요.",
+    "그런 사람 없습니다."
+  ],
+  "모르는사람": [
+    "바빠서 괜찮습니다. 그냥 가주세요.",
+    "필요 없으니 그냥 가주세요.",
+    "잘못 오신 것 같아요.",
+    "더 이상 벨 누르지 마세요.",
+    "계속 이러시면 경찰에 신고하겠습니다."
+  ]
+};
+
 export default function VoiceGenerator() {
-  // 상태 관리
+  // 기본 상태
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isGenerated, setIsGenerated] = useState(false);
   const [textValue, setTextValue] = useState("");
   const [isTextModified, setIsTextModified] = useState(false);
   const [originalText, setOriginalText] = useState("");
-  const [generatedAudio, setGeneratedAudio] = useState<File | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 컴포넌트 언마운트 시 메모리 정리
-  useEffect(() => {
-    return () => {
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-      }
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, [audioUrl]);
+  // 커스텀 훅들
+  const { playAudioFile } = useAudioPlayer();
+  const { isGenerating, isGenerated, generatedAudio, audioUrl, generateVoice, resetGeneration } = useVoiceGeneration();
+  const { categoryStates, generateCategoryVoices, stopAllVoices, setVoicePlayingState } = useCategoryStates();
 
   // 파일 업로드 핸들러
   const HandleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type.startsWith('audio/')) {
+    if (file && file.type.startsWith("audio/")) {
       setUploadedFile(file);
-      setIsGenerated(false);
+      resetGeneration();
       setIsTextModified(false);
     }
   };
@@ -55,14 +80,7 @@ export default function VoiceGenerator() {
     
     if (originalText && newValue !== originalText) {
       setIsTextModified(true);
-      setIsGenerated(false);
-      
-      // 기존 생성된 오디오 정리
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-        setAudioUrl("");
-      }
-      setGeneratedAudio(null);
+      resetGeneration();
       setIsPlaying(false);
     }
   };
@@ -78,30 +96,12 @@ export default function VoiceGenerator() {
   const HandleGenerate = async () => {
     if (!uploadedFile || !textValue) return;
     
-    setIsGenerating(true);
     try {
-      // 기존 오디오 URL 정리
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-        setAudioUrl("");
-      }
-      
-      // 커스텀 문장 API 호출
-      const generatedFile = await GetCustomSentence(textValue, uploadedFile);
-      setGeneratedAudio(generatedFile);
-      
-      // 재생을 위한 URL 생성
-      const newAudioUrl = URL.createObjectURL(generatedFile);
-      setAudioUrl(newAudioUrl);
-      
-      setIsGenerated(true);
+      await generateVoice(textValue, uploadedFile);
       setIsTextModified(false);
       setOriginalText(textValue);
     } catch (error) {
-      console.error('음성 생성 중 오류:', error);
-      alert('음성 생성에 실패했습니다. 다시 시도해 주세요.');
-    } finally {
-      setIsGenerating(false);
+      alert(error instanceof Error ? error.message : "음성 생성에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -110,29 +110,16 @@ export default function VoiceGenerator() {
     if (!audioUrl) return;
     
     try {
-      // 기존 오디오가 재생 중이면 정지
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      
-      // 새 오디오 객체 생성 및 재생
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-      
-      audio.onloadstart = () => setIsPlaying(true);
-      audio.onended = () => setIsPlaying(false);
-      audio.onerror = () => {
-        setIsPlaying(false);
-        alert('오디오 재생에 실패했습니다.');
-      };
-      
-      audio.play().catch(error => {
-        console.error('오디오 재생 오류:', error);
-        setIsPlaying(false);
-        alert('오디오 재생에 실패했습니다.');
+      playAudioFile(audioUrl, {
+        onLoadStart: () => setIsPlaying(true),
+        onEnded: () => setIsPlaying(false),
+        onError: () => {
+          setIsPlaying(false);
+          alert("오디오 재생에 실패했습니다.");
+        }
       });
     } catch (error) {
-      console.error('오디오 재생 오류:', error);
+      console.error("오디오 재생 오류:", error);
       setIsPlaying(false);
     }
   };
@@ -142,17 +129,56 @@ export default function VoiceGenerator() {
     if (!generatedAudio) return;
     
     try {
-      const url = URL.createObjectURL(generatedAudio);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = generatedAudio.name || 'generated-voice.wav';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      DownloadCustom(generatedAudio, generatedAudio.name || "generated-voice.wav");
     } catch (error) {
-      console.error('파일 다운로드 오류:', error);
-      alert('파일 다운로드에 실패했습니다.');
+      alert(error instanceof Error ? error.message : "파일 다운로드에 실패했습니다.");
+    }
+  };
+
+  // 카테고리별 음성 생성 핸들러
+  const HandleCategoryGenerate = async (category: string) => {
+    if (!uploadedFile) return;
+
+    try {
+      await generateCategoryVoices(category, uploadedFile);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : `${category} 음성 생성에 실패했습니다.`);
+    }
+  };
+
+  // 카테고리별 음성 재생 핸들러
+  const HandleCategoryPlay = (category: string, voiceIndex: number) => {
+    const voice = categoryStates[category].voices[voiceIndex];
+    if (!voice) return;
+
+    try {
+      // 모든 음성 정지
+      stopAllVoices();
+
+      // 현재 음성 재생
+      playAudioFile(voice.url, {
+        onLoadStart: () => setVoicePlayingState(category, voiceIndex, true),
+        onEnded: () => setVoicePlayingState(category, voiceIndex, false),
+        onError: () => {
+          setVoicePlayingState(category, voiceIndex, false);
+          alert("오디오 재생에 실패했습니다.");
+        }
+      });
+    } catch (error) {
+      console.error("오디오 재생 오류:", error);
+    }
+  };
+
+  // 카테고리별 음성 저장 핸들러
+  const HandleCategoryDownload = (category: string, voiceIndex: number) => {
+    const voice = categoryStates[category].voices[voiceIndex];
+    if (!voice) return;
+
+    try {
+      const filename = voice.file.name || `${category}-voice-${voiceIndex + 1}.wav`;
+      DownloadCate(voice.url, filename);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "파일 다운로드에 실패했습니다.");
     }
   };
 
@@ -173,7 +199,7 @@ export default function VoiceGenerator() {
             accept="audio/*"
             onChange={HandleFileUpload}
             ref={fileInputRef}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
           <Button
             size="small"
@@ -223,6 +249,76 @@ export default function VoiceGenerator() {
           )}
         </div>
       </div>
+      {/* 음성이 업로드 되었을 때 카테고리 표시 */}
+      {uploadedFile && (
+        <div className={styles.categories}>
+          {categories.map((category: string) => {
+            const state = categoryStates[category];
+            return (
+              <div key={category} className={styles.cateItem}>
+                <div className={styles.title}>
+                  <h3>{category}</h3>
+                  <Image
+                    src={`/images/${categoryImages[category]}.png`}
+                    alt={`${category} 아이콘`}
+                    width={35}
+                    height={35}
+                  />
+                </div>
+                <div className={styles.voices}>
+                  {!state.isGenerated && !state.isGenerating && (
+                    <div className={styles.generating}>
+                      <p className={styles.description}>
+                        {category} 상황에 관련된 문장을 선택하여 사용해보세요!
+                      </p>
+                      <Button
+                        size="small"
+                        iconName="check"
+                        onClick={() => HandleCategoryGenerate(category)}
+                      >
+                        생성
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {state.isGenerating && (
+                    <div className={styles.generating}>
+                      <p>음성 생성 중...</p>
+                    </div>
+                  )}
+                  
+                  {state.isGenerated && state.voices.length > 0 && (
+                    <div className={styles.list}>
+                      {state.voices.map((voice: CategoryVoice, index: number) => (
+                        <div key={index} className={styles.voice}>
+                          <span className={styles.text}>
+                            {categorySentences[category][index]}
+                          </span>
+                          <div className={styles.actions}>
+                            <Button
+                              size="tiny"
+                              iconName="play"
+                              disabled={voice.isPlaying}
+                              onClick={() => HandleCategoryPlay(category, index)}
+                              iconOnly
+                            />
+                            <Button
+                              size="tiny"
+                              iconName="download"
+                              onClick={() => HandleCategoryDownload(category, index)}
+                              iconOnly
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

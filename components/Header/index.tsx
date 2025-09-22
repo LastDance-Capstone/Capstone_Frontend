@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Logo from "@/components/Logo";
 import Button from "@/components/Button";
 import KakaoLogin from "@/utils/oauth/kakao";
 import styles from "./header.module.css";
@@ -14,9 +15,10 @@ export default function Header({
     <header className={styles.header}>
       <div className={styles.desktop}>
         <Link href="/" className={styles.logo}>
-          <h1>
-            VoiceSecure
-          </h1>
+          <Logo
+            type="text"
+            size={187}
+          />
         </Link>
         <div className={styles.buttons}>
           {isLoggedIn ? (
@@ -41,9 +43,11 @@ export default function Header({
         </div>
       </div>
       <div className={styles.mobile}>
-        <h1>
-          VoiceSecure
-        </h1>
+        <Link href="/" className={styles.logo}>
+          <Logo
+            size={28}
+          />
+        </Link>
         <div className={styles.buttons}>
           {isLoggedIn ? (
             <Button
