@@ -92,11 +92,10 @@ export default async function middleware(req: NextRequest) {
   const { origin, protocol } = req.nextUrl;
 
   // JWT 확인
-  const accessToken = GetCookie(req, "access_token");
   const refreshToken = GetCookie(req, "refresh_token");
 
   // JWT 만료되면 재발급 시작
-  if (!accessToken && refreshToken) {
+  if (refreshToken) {
     const reissueRes = await fetch(`${origin}/oauth/reissue`, {
       headers: { "Authorization": refreshToken! },
       cache: "no-store"
