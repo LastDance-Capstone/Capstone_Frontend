@@ -1,167 +1,261 @@
 .page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
-  font-family: var(--font-geist-sans);
+  min-height: 100vh;
+  position: relative;
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+/* 유동적인 블루 웨이브 패턴 배경 */
+.page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 90%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 40%, rgba(218, 165, 255, 0.3) 70%, rgba(138, 43, 226, 0.1) 90%, transparent 100%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.55) 45%, rgba(207, 159, 255, 0.25) 75%, rgba(147, 112, 219, 0.08) 95%, transparent 100%),
+    radial-gradient(ellipse 100% 60% at 40% 20%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(196, 153, 255, 0.2) 80%, rgba(162, 155, 254, 0.06) 95%, transparent 100%),
+    radial-gradient(ellipse 120% 80% at 90% 30%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 55%, rgba(225, 175, 255, 0.15) 85%, rgba(186, 164, 255, 0.05) 95%, transparent 100%),
+    linear-gradient(45deg, 
+      rgba(255, 255, 255, 0.6) 0%, 
+      rgba(255, 255, 255, 0.5) 25%, 
+      rgba(238, 185, 255, 0.3) 50%, 
+      rgba(218, 165, 255, 0.25) 70%, 
+      rgba(186, 164, 255, 0.15) 85%, 
+      rgba(162, 155, 254, 0.08) 100%
+    );
+  background-size: 
+    200% 150%,
+    180% 120%,
+    220% 160%,
+    250% 140%,
+    100% 100%;
+  background-position:
+    -50% 120%,
+    150% 70%,
+    -20% -20%,
+    120% -40%,
+    0 0;
+  opacity: 0.95;
+  z-index: -1;
+  pointer-events: none;
+  animation: wave 15s ease-in-out infinite;
+}
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
+/* 추가적인 물결 효과 */
+.page::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse 70% 45% at 60% 70%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(225, 175, 255, 0.2) 80%, rgba(186, 164, 255, 0.05) 100%),
+    radial-gradient(ellipse 90% 55% at 15% 85%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 60%, rgba(207, 159, 255, 0.15) 90%, transparent 100%),
+    radial-gradient(ellipse 110% 70% at 75% 25%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 65%, rgba(196, 153, 255, 0.1) 95%, transparent 100%),
+    radial-gradient(ellipse 85% 60% at 25% 30%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 70%, rgba(238, 185, 255, 0.08) 100%);
+  background-size: 
+    190% 130%,
+    170% 110%,
+    210% 150%,
+    240% 130%;
+  background-position:
+    80% 80%,
+    -30% 90%,
+    130% -30%,
+    -40% -40%;
+  opacity: 0.85;
+  z-index: -1;
+  pointer-events: none;
+  animation: wave-reverse 20s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% { 
+    background-position:
+      -50% 120%,
+      150% 70%,
+      -20% -20%,
+      120% -40%,
+      0 0;
   }
+  33% { 
+    background-position:
+      -30% 110%,
+      130% 60%,
+      10% -10%,
+      140% -50%,
+      0 0;
+  }
+  66% { 
+    background-position:
+      -70% 130%,
+      170% 80%,
+      -40% -30%,
+      100% -30%,
+      0 0;
+  }
+}
+
+@keyframes wave-reverse {
+  0%, 100% { 
+    background-position:
+      80% 80%,
+      -30% 90%,
+      130% -30%,
+      -40% -40%;
+  }
+  50% { 
+    background-position:
+      100% 70%,
+      -50% 80%,
+      150% -20%,
+      -20% -50%;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(2deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
 }
 
 .main {
+  width: 100%;
+  margin: 120px auto 0;
+  padding: 0 20px 40px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
-}
-
-.main ol {
-  font-family: var(--font-geist-mono);
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
-}
-
-.main code {
-  font-family: inherit;
-  background: var(--gray-alpha-100);
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-.ctas {
-  display: flex;
-  gap: 16px;
-}
-
-.ctas a {
-  appearance: none;
-  border-radius: 128px;
-  height: 48px;
-  padding: 0 20px;
-  border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  cursor: pointer;
-  display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 500;
+  max-width: 1200px;
+  position: relative;
 }
 
-a.primary {
-  background: var(--foreground);
-  color: var(--background);
-  gap: 8px;
-}
-
-a.secondary {
-  border-color: var(--gray-alpha-200);
-  min-width: 158px;
-}
-
-.footer {
-  grid-row-start: 3;
+.message {
+  width: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   gap: 24px;
+  text-align: center;
+  word-break: keep-all;
+  position: relative;
+  animation: fadeInUp 0.6s ease-out both;
 }
 
-.footer a {
+.title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(135deg, 
+    #1a1a1a 0%, 
+    #4a4a4a 25%, 
+    #8b5cf6 45%, 
+    #a855f7 55%, 
+    #6b46c1 75%, 
+    #1a1a1a 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  animation: gradientShift 4s ease-in-out infinite;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.description {
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: #4a5568;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-.footer img {
-  flex-shrink: 0;
+.description p {
+  margin: 0;
+  opacity: 0.9;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-
-  .footer a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
+.please {
+  font-size: var(--text-body-bold-2-size);
+  font-weight: var(--text-body-bold-2-weight);
+  line-height: var(--text-body-bold-2-line-height);
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+  padding: 20px 30px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  color: #6b46c1;
 }
 
-@media (max-width: 600px) {
-  .page {
-    padding: 32px;
-    padding-bottom: 80px;
+/* 모바일에서 웨이브 패턴 조정 */
+@media (max-width: 768px) {
+  .page::before {
+    background-size: 
+      150% 120%,
+      130% 100%,
+      160% 130%,
+      180% 110%,
+      100% 100%;
+    opacity: 0.5;
+    animation-duration: 12s;
   }
-
-  .main {
-    align-items: center;
+  
+  .page::after {
+    background-size:
+      200% 150%,
+      180% 130%,
+      190% 140%;
+    opacity: 0.6;
+    animation-duration: 16s;
   }
-
-  .main ol {
-    text-align: center;
+  
+  .title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    margin-bottom: 12px;
   }
-
-  .ctas {
-    flex-direction: column;
+  
+  .message {
+    gap: 20px;
+    padding: 0 8px;
   }
-
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
+  
+  .description {
+    font-size: clamp(0.9rem, 3vw, 1rem);
+    gap: 12px;
   }
-
-  a.secondary {
-    min-width: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+  
+  .please {
+    padding: 16px 20px;
+    font-size: 0.9rem;
   }
 }
